@@ -1,5 +1,6 @@
 from gurupali_facebook.facebook import (
-    get_group, get_feed, get_post, get_comments)
+    get_group, get_feed, get_post, get_comments,
+    get_next_page_url, get_next_page)
 from gurupali_facebook.db import (
     create_tables as db_create_tables, upsert_group, upsert_member,
     upsert_post, upsert_comment)
@@ -14,25 +15,33 @@ def crawl_group(settings):
     upsert_group(settings, _id=group['id'], name=group['name'])
 
     feed = get_feed(settings)
+    next_page_url = get_next_page_url(feed)
 
-    for d in feed['data']:
-        post = get_post(d['id'], settings)
+    while(next_page_url):
+        for d in feed['data']:
+            post = get_post(d['id'], settings)
 
-        upsert_member(settings, _id=post['from']['id'],
-                      name=post['from']['name'],
-                      profile_pic=post['from']['picture']['data']['url'])
+            upsert_member(settings, _id=post['from']['id'],
+                          name=post['from']['name'],
+                          profile_pic=post['from']['picture']['data']['url'])
 
-        upsert_post(settings, _id=post['id'],
-                    group_id=settings.facebook_group_id,
-                    member_id=post['from']['id'], date=post['created_time'])
+            upsert_post(settings, _id=post['id'],
+                        group_id=settings.facebook_group_id,
+                        member_id=post['from']['id'],
+                        date=post['created_time'])
 
-        comments = get_comments(post['id'], settings)
-        for comment in comments['data']:
-            upsert_member(
-                settings, _id=comment['from']['id'],
-                name=comment['from']['name'],
-                profile_pic=comment['from']['picture']['data']['url'])
+            comments = get_comments(post['id'], settings)
+            for comment in comments['data']:
+                upsert_member(
+                    settings, _id=comment['from']['id'],
+                    name=comment['from']['name'],
+                    profile_pic=comment['from']['picture']['data']['url'])
 
-            upsert_comment(
-                settings, _id=comment['id'], post_id=post['id'],
-                member_id=comment['from']['id'], date=comment['created_time'])
+                upsert_comment(
+                    settings, _id=comment['id'], post_id=post['id'],
+                    member_id=comment['from']['id'],
+                    date=comment['created_time'])
+
+        next_page_url = get_next_page_url(feed)
+        if next_page_url:
+            feed = get_next_page(next_page_url)

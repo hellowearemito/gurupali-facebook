@@ -7,6 +7,14 @@ post_fields = 'id,from{id,name,picture},created_time'  # noqa
 comment_fields = 'id,from{id,name,picture},created_time'
 
 
+def get_next_page_url(obj):
+    return obj.get('paging', {}).get('next')
+
+
+def get_next_page(url):
+    return requests.get(url).json()
+
+
 def get_group(settings):
     return _call_api(_id=settings.facebook_group_id, endpoint='',
                      access_token=settings.facebook_access_token)
