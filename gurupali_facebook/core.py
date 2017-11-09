@@ -3,7 +3,7 @@ from gurupali_facebook.facebook import (
     get_next_page_url, get_next_page)
 from gurupali_facebook.db import (
     create_tables as db_create_tables, upsert_group, upsert_member,
-    upsert_post, upsert_comment)
+    upsert_post, upsert_comment, get_window_stat)
 
 
 def create_tables(settings):
@@ -49,3 +49,12 @@ def _crawl_comments(post_id, settings):
             settings, _id=comment['id'], post_id=post_id,
             member_id=comment['from']['id'],
             date=comment['created_time'])
+
+
+def analyze(settings):
+    from_date = '2012-10-07'
+    to_date = '2012-12-07'
+
+    window_stat = get_window_stat(settings, settings.facebook_group_id,
+                                  from_date, to_date)
+    print(window_stat)

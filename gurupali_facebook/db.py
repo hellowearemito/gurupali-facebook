@@ -53,3 +53,14 @@ def upsert_post(settings, _id, group_id, member_id, date):
 def upsert_comment(settings, _id, post_id, member_id, date):
     return _upsert(settings, 'comment_exists', 'add_comment',
                    _id, post_id, member_id, date)
+
+
+def get_window_stat(settings, group_id, from_date, to_date):
+    conn = _get_connection(settings.db_settings)
+    cur = conn.cursor()
+
+    cur.execute(_get_query(settings.base_dir, 'stat_on_window'),
+                (group_id, from_date, to_date))
+    res = cur.fetchall()
+    conn.close()
+    return res
