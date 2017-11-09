@@ -8,6 +8,7 @@ from gurupali_facebook.db import (
     upsert_post, upsert_comment, get_window_stat, get_first_post_date,
     get_last_post_date)
 from gurupali_facebook.utils import add_month
+from gurupali_facebook.analyzer.main_viz_feed_hac_2017 import generete_viz_feed_csvs
 
 
 def create_tables(settings):
@@ -41,6 +42,11 @@ def crawl_group(settings):
             feed = get_next_page(next_page_url)
 
 
+def analyze(settings):
+    monthly_raw_data, start_year, start_month = _get_monthly_raw_data(settings)
+    generete_viz_feed_csvs(monthly_raw_data, start_year, start_month)
+
+
 def _crawl_comments(post_id, settings):
     comments = get_comments(post_id, settings)
     for comment in comments['data']:
@@ -55,7 +61,7 @@ def _crawl_comments(post_id, settings):
             date=comment['created_time'])
 
 
-def analyze(settings):
+def _get_monthly_raw_data(settings):
     interval = 2
     step = 1
     from_date = init_date = get_first_post_date(settings).replace(
@@ -70,4 +76,4 @@ def analyze(settings):
         df.columns = ['member_id_post_owner', 'member_id_commenter']
         stats.append(df)
         from_date = add_month(from_date, n=step)
-    return stats, init_date
+    return stats, init_date.year, init_date.month
