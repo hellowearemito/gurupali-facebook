@@ -30,18 +30,22 @@ def crawl_group(settings):
                         member_id=post['from']['id'],
                         date=post['created_time'])
 
-            comments = get_comments(post['id'], settings)
-            for comment in comments['data']:
-                upsert_member(
-                    settings, _id=comment['from']['id'],
-                    name=comment['from']['name'],
-                    profile_pic=comment['from']['picture']['data']['url'])
-
-                upsert_comment(
-                    settings, _id=comment['id'], post_id=post['id'],
-                    member_id=comment['from']['id'],
-                    date=comment['created_time'])
+            _crawl_comments(post['id'], settings)
 
         next_page_url = get_next_page_url(feed)
         if next_page_url:
             feed = get_next_page(next_page_url)
+
+
+def _crawl_comments(post_id, settings):
+    comments = get_comments(post_id, settings)
+    for comment in comments['data']:
+        upsert_member(
+            settings, _id=comment['from']['id'],
+            name=comment['from']['name'],
+            profile_pic=comment['from']['picture']['data']['url'])
+
+        upsert_comment(
+            settings, _id=comment['id'], post_id=post_id,
+            member_id=comment['from']['id'],
+            date=comment['created_time'])
