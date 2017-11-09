@@ -1,0 +1,1 @@
+SELECT id FROM fb_post WHERE id=%s

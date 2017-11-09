@@ -1,0 +1,1 @@
+INSERT INTO fb_member (id, name, profile_pic) VALUES (%s, %s, %s)
