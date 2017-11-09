@@ -62,5 +62,6 @@ def get_window_stat(settings, group_id, from_date, to_date):
     cur.execute(_get_query(settings.base_dir, 'stat_on_window'),
                 (group_id, from_date, to_date))
     res = cur.fetchall()
+
     conn.close()
     return res

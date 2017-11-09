@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# analyzer debug and result files
+dummy_query_result*
+edges.csv
+nodes.csv
+

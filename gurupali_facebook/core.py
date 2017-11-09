@@ -54,7 +54,7 @@ def _crawl_comments(post_id, settings):
 def analyze(settings):
     from_date = '2012-10-07'
     to_date = '2012-12-07'
-
+    
     window_stat = get_window_stat(settings, settings.facebook_group_id,
                                   from_date, to_date)
     print(window_stat)
