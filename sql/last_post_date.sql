@@ -1,0 +1,1 @@
+SELECT max(date) FROM fb_post

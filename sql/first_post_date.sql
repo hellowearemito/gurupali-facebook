@@ -1,0 +1,1 @@
+SELECT min(date) FROM fb_post

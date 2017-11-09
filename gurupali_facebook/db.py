@@ -36,6 +36,16 @@ def _upsert(settings, exists_query, add_query, *args):
     return args[0]
 
 
+def _get_one(settings, query):
+    conn = _get_connection(settings.db_settings)
+    cur = conn.cursor()
+
+    cur.execute(_get_query(settings.base_dir, query))
+    res = cur.fetchone()[0]
+    conn.close()
+    return res
+
+
 def upsert_group(settings, _id, name):
     return _upsert(settings, 'group_exists', 'add_group', _id, name)
 
@@ -64,3 +74,11 @@ def get_window_stat(settings, group_id, from_date, to_date):
     res = cur.fetchall()
     conn.close()
     return res
+
+
+def get_first_post_date(settings):
+    return _get_one(settings, 'first_post_date')
+
+
+def get_last_post_date(settings):
+    return _get_one(settings, 'last_post_date')
