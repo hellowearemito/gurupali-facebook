@@ -1,9 +1,13 @@
+import pandas as pd
+
 from gurupali_facebook.facebook import (
     get_group, get_feed, get_post, get_comments,
     get_next_page_url, get_next_page)
 from gurupali_facebook.db import (
     create_tables as db_create_tables, upsert_group, upsert_member,
-    upsert_post, upsert_comment, get_window_stat)
+    upsert_post, upsert_comment, get_window_stat, get_first_post_date,
+    get_last_post_date)
+from gurupali_facebook.utils import add_month
 
 
 def create_tables(settings):
@@ -52,9 +56,18 @@ def _crawl_comments(post_id, settings):
 
 
 def analyze(settings):
-    from_date = '2012-10-07'
-    to_date = '2012-12-07'
-    
-    window_stat = get_window_stat(settings, settings.facebook_group_id,
-                                  from_date, to_date)
-    print(window_stat)
+    interval = 2
+    step = 1
+    from_date = init_date = get_first_post_date(settings).replace(
+        day=1, hour=0, minute=0, second=0)
+    to_date = get_last_post_date(settings)
+
+    stats = []
+    while from_date <= to_date:
+        df = pd.DataFrame(
+            get_window_stat(settings, settings.facebook_group_id,
+                            from_date, add_month(from_date, n=interval)))
+        df.columns = ['member_id_post_owner', 'member_id_commenter']
+        stats.append(df)
+        from_date = add_month(from_date, n=step)
+    return stats, init_date
