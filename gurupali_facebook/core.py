@@ -62,7 +62,7 @@ def generate_profiles(settings):
     (monthly_raw_data, start_year,
         start_month, dateline) = _get_monthly_raw_data(settings)
     closeness_stat = generete_closeness_centrality(monthly_raw_data, dateline)
-    pagerank_stat = generete_closeness_centrality(monthly_raw_data, dateline)
+    pagerank_stat = generete_pagerank(monthly_raw_data, dateline)
 
     for m in get_members(settings):
         profiles[m[0]] = [
