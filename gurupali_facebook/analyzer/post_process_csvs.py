@@ -3,7 +3,7 @@ import pandas as pd
 
 def normalize_node_weights():
     node_data = pd.read_csv("nodes.csv")
-    sums = node_data.groupby(by=["year", "month"], as_index=False).sum()
+    sums = node_data.groupby(by=["year", "month"], as_index=False).max()
     new_df = pd.merge(node_data, sums, how='left', left_on=["year", "month"], right_on=["year", "month"])
 
     def f(x):
@@ -21,7 +21,7 @@ def normalize_node_weights():
 
 def normalize_edge_weights():
     edge_data = pd.read_csv("edges.csv")
-    sums = edge_data.groupby(by=["year", "month"], as_index=False).sum()
+    sums = edge_data.groupby(by=["year", "month"], as_index=False).max()
     new_df = pd.merge(edge_data, sums, how='left', left_on=["year", "month"], right_on=["year", "month"])
 
     def f(x):
