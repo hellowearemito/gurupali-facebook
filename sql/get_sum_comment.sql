@@ -1,0 +1,1 @@
+SELECT count(*) FROM fb_comment WHERE member_id=%s

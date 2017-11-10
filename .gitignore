@@ -104,6 +104,7 @@ ENV/
 dummy_query_result*
 edges.csv
 nodes.csv
+profiles.json
 
 #PyCharm
 .idea/*

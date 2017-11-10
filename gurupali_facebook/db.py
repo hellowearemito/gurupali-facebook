@@ -46,6 +46,16 @@ def _get_one(settings, query):
     return res
 
 
+def _get_one_w_param(settings, query, *args):
+    conn = _get_connection(settings.db_settings)
+    cur = conn.cursor()
+
+    cur.execute(_get_query(settings.base_dir, query), (args))
+    res = cur.fetchone()[0]
+    conn.close()
+    return res
+
+
 def upsert_group(settings, _id, name):
     return _upsert(settings, 'group_exists', 'add_group', _id, name)
 
@@ -77,9 +87,48 @@ def get_window_stat(settings, group_id, from_date, to_date):
     return res
 
 
+def get_post_stat(settings, group_id, from_date, to_date):
+    return _get_all(settings, 'stat_posts', group_id, from_date, to_date)
+
+
+def get_comment_stat(settings, group_id, from_date, to_date):
+    return _get_all(settings, 'stat_comments', group_id, from_date, to_date)
+
+
+def _get_all(settings, query, *args):
+    conn = _get_connection(settings.db_settings)
+    cur = conn.cursor()
+
+    cur.execute(_get_query(settings.base_dir, query),
+                (args))
+    res = cur.fetchall()
+
+    conn.close()
+    return res
+
+
 def get_first_post_date(settings):
     return _get_one(settings, 'first_post_date')
 
 
 def get_last_post_date(settings):
     return _get_one(settings, 'last_post_date')
+
+
+def get_members(settings):
+    conn = _get_connection(settings.db_settings)
+    cur = conn.cursor()
+
+    cur.execute(_get_query(settings.base_dir, 'get_members'))
+    res = cur.fetchall()
+
+    conn.close()
+    return res
+
+
+def get_sum_post(settings, _id):
+    return _get_one_w_param(settings, 'get_sum_post', _id)
+
+
+def get_sum_comment(settings, _id):
+    return _get_one_w_param(settings, 'get_sum_comment', _id)

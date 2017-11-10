@@ -1,7 +1,8 @@
 import argparse
 import settings
 
-from gurupali_facebook.core import create_tables, crawl_group, analyze
+from gurupali_facebook.core import (
+    create_tables, crawl_group, analyze, generate_profiles)
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('command', metavar='c', type=str,
@@ -15,3 +16,5 @@ if __name__ == '__main__':
         crawl_group(settings)
     elif args.command == 'analyze':
         analyze(settings)
+    elif args.command == 'generate-profiles':
+        generate_profiles(settings)

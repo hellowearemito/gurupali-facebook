@@ -1,0 +1,1 @@
+SELECT count(*) FROM fb_post WHERE member_id=%s

@@ -1,3 +1,5 @@
+import networkx as nx
+
 from gurupali_facebook.analyzer.generate_graph import generate_grapf
 from gurupali_facebook.analyzer.detect_communities import detect_communities
 from gurupali_facebook.analyzer.track_groups import track_groups
@@ -13,3 +15,27 @@ def generete_viz_feed_csvs(monthly_raw_data, start_year, start_month):
 
     generate_viz_feed_csvs(monthly_graphs, groups_tracking,
                            start_year, start_month)
+
+
+def generete_closeness_centrality(monthly_raw_data, dateline):
+    monthly_graphs = list(map(generate_grapf, monthly_raw_data))
+
+    stat = []
+    for i, mg in enumerate(monthly_graphs):
+        closenesses = nx.closeness_centrality(mg)
+
+        stat.append([dateline[i], closenesses])
+
+    return stat
+
+
+def generete_pagerank(monthly_raw_data, dateline):
+    monthly_graphs = list(map(generate_grapf, monthly_raw_data))
+
+    stat = []
+    for i, mg in enumerate(monthly_graphs):
+        closenesses = nx.pagerank(mg)
+
+        stat.append([dateline[i], closenesses])
+
+    return stat

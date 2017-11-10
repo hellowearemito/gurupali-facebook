@@ -1,14 +1,21 @@
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse, parse_qsl, urlunparse
 import requests
 
 graph_url = 'https://graph.facebook.com'
 version = 'v2.11'
-post_fields = 'id,from{id,name,picture},created_time'  # noqa
-comment_fields = 'id,from{id,name,picture},created_time'
+fields = 'id,from{id,name,picture},created_time'
 
 
 def get_next_page_url(obj):
-    return obj.get('paging', {}).get('next')
+    params = {'fields': fields}
+    url = obj.get('paging', {}).get('next')
+    if url:
+        url_parts = list(urlparse(url))
+        query = dict(parse_qsl(url_parts[4]))
+        query.update(params)
+        url_parts[4] = urlencode(query)
+        return urlunparse(url_parts)
+    return url
 
 
 def get_next_page(url):
@@ -27,13 +34,13 @@ def get_feed(settings):
 
 def get_post(_id, settings):
     return _call_api(_id=_id, endpoint='',
-                     fields=post_fields,
+                     fields=fields,
                      access_token=settings.facebook_access_token)
 
 
 def get_comments(_id, settings):
     return _call_api(_id=_id, endpoint='comments',
-                     fields=comment_fields,
+                     fields=fields,
                      access_token=settings.facebook_access_token)
 
 
