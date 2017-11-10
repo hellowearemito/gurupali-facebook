@@ -2,7 +2,7 @@ from urllib.parse import urlencode, urlparse, parse_qsl, urlunparse
 import requests
 
 graph_url = 'https://graph.facebook.com'
-version = 'v2.11'
+version = 'v2.10'
 fields = 'id,from{id,name,picture},created_time'
 
 

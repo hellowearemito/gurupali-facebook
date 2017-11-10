@@ -1,1 +1,0 @@
-SELECT * FROM fb_member

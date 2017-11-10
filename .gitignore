@@ -103,7 +103,9 @@ ENV/
 # analyzer debug and result files
 dummy_query_result*
 edges.csv
+edges2.csv
 nodes.csv
+nodes2.csv
 profiles.json
 
 #PyCharm

@@ -108,18 +108,33 @@ def _get_all(settings, query, *args):
 
 
 def get_first_post_date(settings):
-    return _get_one(settings, 'first_post_date')
+    return _get_one_w_param(settings, 'first_post_date',
+                            settings.facebook_group_id)
 
 
 def get_last_post_date(settings):
-    return _get_one(settings, 'last_post_date')
+    return _get_one_w_param(settings, 'last_post_date',
+                            settings.facebook_group_id)
 
 
-def get_members(settings):
+def get_post_members(settings):
     conn = _get_connection(settings.db_settings)
     cur = conn.cursor()
 
-    cur.execute(_get_query(settings.base_dir, 'get_members'))
+    cur.execute(_get_query(settings.base_dir, 'get_post_members'),
+                (settings.facebook_group_id,))
+    res = cur.fetchall()
+
+    conn.close()
+    return res
+
+
+def get_comment_members(settings):
+    conn = _get_connection(settings.db_settings)
+    cur = conn.cursor()
+
+    cur.execute(_get_query(settings.base_dir, 'get_comment_members'),
+                (settings.facebook_group_id,))
     res = cur.fetchall()
 
     conn.close()

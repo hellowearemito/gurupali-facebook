@@ -7,8 +7,8 @@ from gurupali_facebook.facebook import (
 from gurupali_facebook.db import (
     create_tables as db_create_tables, upsert_group, upsert_member,
     upsert_post, upsert_comment, get_window_stat, get_first_post_date,
-    get_last_post_date, get_members, get_sum_post, get_sum_comment,
-    get_post_stat, get_comment_stat)
+    get_last_post_date, get_post_members, get_comment_members, get_sum_post,
+    get_sum_comment, get_post_stat, get_comment_stat)
 from gurupali_facebook.utils import (
     add_month, profile_str, profile_picture, profile_stat)
 from gurupali_facebook.analyzer.main_viz_feed_hac_2017 import (
@@ -64,7 +64,8 @@ def generate_profiles(settings):
     closeness_stat = generete_closeness_centrality(monthly_raw_data, dateline)
     pagerank_stat = generete_pagerank(monthly_raw_data, dateline)
 
-    for m in get_members(settings):
+    for m in list(
+            set(get_post_members(settings) + get_comment_members(settings))):
         profiles[m[0]] = [
             profile_str(m[1]),
             profile_picture(m[2]),

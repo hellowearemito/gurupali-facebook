@@ -1,1 +1,1 @@
-SELECT max(date) FROM fb_post
+SELECT max(date) FROM fb_post WHERE group_id=%s

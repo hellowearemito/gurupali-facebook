@@ -1,1 +1,1 @@
-SELECT min(date) FROM fb_post
+SELECT min(date) FROM fb_post WHERE group_id=%s
