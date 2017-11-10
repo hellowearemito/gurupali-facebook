@@ -1,5 +1,6 @@
-from urllib.parse import urlencode
+#from urllib.parse import urlencode
 import requests
+import urllib
 
 graph_url = 'https://graph.facebook.com'
 version = 'v2.11'
@@ -54,4 +55,4 @@ def _assemble_url(_id, endpoint, *args, **kwargs):
         version=version,
         _id=_id,
         endpoint=endpoint,
-        query=urlencode(kwargs))
+        query=urllib.urlencode(kwargs))

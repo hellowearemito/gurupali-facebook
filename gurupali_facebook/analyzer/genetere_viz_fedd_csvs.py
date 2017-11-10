@@ -5,7 +5,13 @@ import csv
 def generate_viz_feed_csvs(graphs, groups_tracking, start_year, start_month):
     local_graph = copy.deepcopy(graphs)
     only_community_node_graphs = list(map(drop_not_community_member_nodes, local_graph, groups_tracking))
-    group_attributed_graphs = list(map(add_group_attr_to_graph, only_community_node_graphs, groups_tracking))
+    #group_attributed_graphs = list(map(add_group_attr_to_graph, only_community_node_graphs, groups_tracking))
+
+    group_attributed_graphs = []
+
+    for i in range(len(only_community_node_graphs)):
+        print(groups_tracking[i].keys())
+        group_attributed_graphs.append(add_group_attr_to_graph(only_community_node_graphs[i], groups_tracking[i]))
 
     dump_edges(group_attributed_graphs, start_year, start_month)
     dump_nodes(group_attributed_graphs, start_year, start_month)
@@ -44,7 +50,7 @@ def add_group_attr_to_graph(G, groups):
 
 
 def dump_edges(graphs, year, month):
-    with open('edges.csv', 'w', newline='') as csvfile:
+    with open('edges.csv', 'w') as csvfile:
         edge_writer = csv.writer(csvfile)
 
         edge_writer.writerow(["from","to","year","month","weight"])
@@ -59,7 +65,7 @@ def dump_edges(graphs, year, month):
 
 
 def dump_nodes(graphs, year, month):
-    with open('nodes.csv', 'w', newline='') as csvfile:
+    with open('nodes.csv', 'w') as csvfile:
         node_writer = csv.writer(csvfile)
 
         node_writer.writerow(["id", "year", "month", "group", "weight"])
