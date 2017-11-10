@@ -1,3 +1,6 @@
+# import copy
+
+
 def track_groups(communities_list):
 
     initial_groups, cnt = init_groups(communities_list[0])
@@ -7,6 +10,7 @@ def track_groups(communities_list):
     for i in range(1, len(communities_list)):
         new_groups, cnt = get_next_generation_groups(old_groups_dict, communities_list[i], cnt)
         groups_tracking.append(new_groups)
+        old_groups_dict = new_groups
 
     return groups_tracking
 
@@ -25,11 +29,16 @@ def get_next_generation_groups(old_groups_dict, new_groups_list, cnt):
     new_groups_dict = dict()
     new_groups_list_rest = new_groups_list
 
+    if not new_groups_list:
+        return new_groups_dict, cnt
+
     for old_group_id, old_group_members in old_groups_dict.items():
         common_element_number = get_common_members(old_group_members, new_groups_list)
         max_index = common_element_number.index(max(common_element_number))
         new_groups_dict[old_group_id] = new_groups_list[max_index]
+
         new_groups_list_rest.remove(new_groups_list[max_index])
+        if not new_groups_list_rest: break
 
     if new_groups_list_rest:
         for act_group in new_groups_list_rest:
