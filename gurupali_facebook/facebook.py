@@ -1,4 +1,5 @@
 from urllib.parse import urlencode, urlparse, parse_qsl, urlunparse
+from time import sleep
 import requests
 
 graph_url = 'https://graph.facebook.com'
@@ -45,8 +46,15 @@ def get_comments(_id, settings):
 
 
 def _call_api(_id, endpoint, *args, **kwargs):
-    res = requests.get(
-        _assemble_url(_id, endpoint, *args, **kwargs)).json()
+    url = _assemble_url(_id, endpoint, *args, **kwargs)
+    resp = requests.get(url)
+
+    if resp.status_code == 503:
+        print('Error at Facebook API. Retrying...')
+        sleep(5)
+        resp = requests.get(url)
+
+    res = resp.json()
 
     if 'error' in res:
         raise Exception(
