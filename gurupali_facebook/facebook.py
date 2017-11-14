@@ -19,7 +19,7 @@ def get_next_page_url(obj):
     return url
 
 
-def get_next_page(url):
+def get_page(url):
     return requests.get(url).json()
 
 
@@ -57,6 +57,9 @@ def _call_api(_id, endpoint, *args, **kwargs):
     res = resp.json()
 
     if 'error' in res:
+        if res['error']['code'] == 17:
+            print("""User request limit reached."""
+                  """Please refresh your token and start againg.""")
         raise Exception(
             'Facebook API error: {error}'.format(
                 error=res['error']['message']))

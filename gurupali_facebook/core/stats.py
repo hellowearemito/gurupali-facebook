@@ -1,12 +1,8 @@
 import json
 import pandas as pd
 
-from gurupali_facebook.facebook import (
-    get_group, get_feed, get_post, get_comments,
-    get_next_page_url, get_next_page)
 from gurupali_facebook.db import (
-    create_tables as db_create_tables, upsert_group, upsert_member,
-    upsert_post, upsert_comment, get_window_stat, get_first_post_date,
+    get_window_stat, get_first_post_date,
     get_last_post_date, get_post_members, get_comment_members, get_sum_post,
     get_sum_comment, get_post_stat, get_comment_stat)
 from gurupali_facebook.utils import (
@@ -14,38 +10,6 @@ from gurupali_facebook.utils import (
 from gurupali_facebook.analyzer.main_viz_feed_hac_2017 import (
     generete_viz_feed_csvs, generete_closeness_centrality,
     generete_pagerank)
-
-
-def create_tables(settings):
-    db_create_tables(settings)
-
-
-def crawl_group(settings):
-    group = get_group(settings)
-    upsert_group(settings, _id=group['id'], name=group['name'])
-
-    feed = get_feed(settings)
-    next_page_url = get_next_page_url(feed)
-
-    while(next_page_url):
-        print('next page')
-        for d in feed['data']:
-            post = get_post(d['id'], settings)
-
-            upsert_member(settings, _id=post['from']['id'],
-                          name=post['from']['name'],
-                          profile_pic=post['from']['picture']['data']['url'])
-
-            upsert_post(settings, _id=post['id'],
-                        group_id=settings.facebook_group_id,
-                        member_id=post['from']['id'],
-                        date=post['created_time'])
-
-            _crawl_comments(post['id'], settings)
-
-        next_page_url = get_next_page_url(feed)
-        if next_page_url:
-            feed = get_next_page(next_page_url)
 
 
 def analyze(settings):
@@ -81,26 +45,6 @@ def generate_profiles(settings):
 
     with open('profiles.json', 'w') as outfile:
         json.dump(profiles, outfile)
-
-
-def _crawl_comments(post_id, settings):
-    comments = get_comments(post_id, settings)
-    next_page_url = 'init'
-
-    while(next_page_url):
-        for comment in comments['data']:
-            upsert_member(
-                settings, _id=comment['from']['id'],
-                name=comment['from']['name'],
-                profile_pic=comment['from']['picture']['data']['url'])
-
-            upsert_comment(
-                settings, _id=comment['id'], post_id=post_id,
-                member_id=comment['from']['id'],
-                date=comment['created_time'])
-        next_page_url = get_next_page_url(comments)
-        if next_page_url:
-            comments = get_next_page(next_page_url)
 
 
 def _get_monthly_raw_data(settings):
