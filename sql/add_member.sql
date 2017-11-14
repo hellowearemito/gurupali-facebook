@@ -1,1 +1,1 @@
-INSERT INTO fb_member (id, name, profile_pic) VALUES (%s, %s, %s)
+INSERT INTO fb_member (id, name) VALUES (%s, %s)

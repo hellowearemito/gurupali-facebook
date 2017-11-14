@@ -5,8 +5,7 @@ CREATE TABLE IF NOT EXISTS fb_group (
 
 CREATE TABLE IF NOT EXISTS fb_member (
     id varchar(255) primary key,
-    name varchar(255),
-    profile_pic varchar(255)
+    name varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS fb_post (

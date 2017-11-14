@@ -60,9 +60,8 @@ def upsert_group(settings, _id, name):
     return _upsert(settings, 'group_exists', 'add_group', _id, name)
 
 
-def upsert_member(settings, _id, name, profile_pic):
-    return _upsert(settings, 'member_exists', 'add_member',
-                   _id, name, profile_pic)
+def upsert_member(settings, _id, name):
+    return _upsert(settings, 'member_exists', 'add_member', _id, name)
 
 
 def upsert_post(settings, _id, group_id, member_id, date):

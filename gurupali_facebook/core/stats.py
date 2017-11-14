@@ -5,8 +5,7 @@ from gurupali_facebook.db import (
     get_window_stat, get_first_post_date,
     get_last_post_date, get_post_members, get_comment_members, get_sum_post,
     get_sum_comment, get_post_stat, get_comment_stat)
-from gurupali_facebook.utils import (
-    add_month, profile_str, profile_picture, profile_stat)
+from gurupali_facebook.utils import add_month, profile_str, profile_stat
 from gurupali_facebook.analyzer.main_viz_feed_hac_2017 import (
     generete_viz_feed_csvs, generete_closeness_centrality,
     generete_pagerank)
@@ -32,7 +31,6 @@ def generate_profiles(settings):
             set(get_post_members(settings) + get_comment_members(settings))):
         profiles[m[0]] = [
             profile_str(m[1]),
-            profile_picture(m[2]),
             profile_str(get_sum_post(settings, _id=m[0]),
                         name="Total number of posts"),
             profile_str(get_sum_comment(settings, _id=m[0]),

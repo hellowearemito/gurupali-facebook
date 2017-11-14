@@ -27,8 +27,7 @@ def _crawl_posts(feed, settings):
         post = get_post(d['id'], settings)
 
         upsert_member(settings, _id=post['from']['id'],
-                      name=post['from']['name'],
-                      profile_pic=post['from']['picture']['data']['url'])
+                      name=post['from']['name'])
 
         upsert_post(settings, _id=post['id'],
                     group_id=settings.facebook_group_id,
@@ -46,8 +45,7 @@ def _crawl_comments(post_id, settings):
         for comment in comments['data']:
             upsert_member(
                 settings, _id=comment['from']['id'],
-                name=comment['from']['name'],
-                profile_pic=comment['from']['picture']['data']['url'])
+                name=comment['from']['name'])
 
             upsert_comment(
                 settings, _id=comment['id'], post_id=post_id,

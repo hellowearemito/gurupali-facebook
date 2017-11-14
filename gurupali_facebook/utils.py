@@ -19,13 +19,6 @@ def profile_str(value, name="Name"):
     }
 
 
-def profile_picture(value):
-    return {
-        "type": "picture",
-        "value": value
-    }
-
-
 def profile_stat(stats, _id, name):
     return {
         "name": name,
