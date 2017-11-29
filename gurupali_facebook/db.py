@@ -146,3 +146,26 @@ def get_sum_post(settings, _id):
 
 def get_sum_comment(settings, _id):
     return _get_one_w_param(settings, 'get_sum_comment', _id)
+
+
+def next_page_exists(settings, group_id):
+    return bool(_get_one_w_param(settings, 'next_page_exists', group_id))
+
+
+def save_next_page_url(settings, group_id, url):
+    conn = _get_connection(settings.db_settings)
+    cur = conn.cursor()
+
+    if next_page_exists(settings, group_id):
+        cur.execute(_get_query(settings.base_dir, 'update_pager'),
+                    (url, group_id))
+    else:
+        cur.execute(_get_query(settings.base_dir, 'add_pager'),
+                    (group_id, url))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+def get_next_page(settings, group_id):
+    return _get_one_w_param(settings, 'get_next_page', group_id)

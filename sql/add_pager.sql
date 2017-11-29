@@ -1,0 +1,1 @@
+INSERT INTO fb_pager (group_id, link) VALUES (%s, %s)

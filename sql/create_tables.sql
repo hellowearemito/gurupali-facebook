@@ -35,3 +35,9 @@ CREATE TABLE IF NOT EXISTS fb_comment_recations (
     member_id varchar(255) REFERENCES fb_member (id),
     type varchar(255)
 );
+
+CREATE TABLE IF NOT EXISTS fb_pager (
+    id serial primary key,
+    group_id varchar(255) REFERENCES fb_group (id),
+    link text
+);

@@ -7,13 +7,15 @@ version = 'v2.10'
 fields = 'id,from{id,name,picture},created_time'
 
 
-def get_next_page_url(obj):
+def get_next_page_url(obj, remove_access_token=False):
     params = {'fields': fields}
     url = obj.get('paging', {}).get('next')
     if url:
         url_parts = list(urlparse(url))
         query = dict(parse_qsl(url_parts[4]))
         query.update(params)
+        if remove_access_token:
+            query.pop('access_token', None)
         url_parts[4] = urlencode(query)
         return urlunparse(url_parts)
     return url
@@ -28,8 +30,8 @@ def get_group(settings):
                      access_token=settings.facebook_access_token)
 
 
-def get_feed(settings):
-    return _call_api(_id=settings.facebook_group_id, endpoint='feed',
+def get_feed(settings, url=None):
+    return _call_api(_id=settings.facebook_group_id, endpoint='feed', url=url,
                      access_token=settings.facebook_access_token)
 
 
@@ -46,7 +48,11 @@ def get_comments(_id, settings):
 
 
 def _call_api(_id, endpoint, *args, **kwargs):
-    url = _assemble_url(_id, endpoint, *args, **kwargs)
+    if 'url' in kwargs and kwargs['url'] is not None:
+        url = '{url}&{params}'.format(url=kwargs.pop('url'),
+                                      params=urlencode(kwargs))
+    else:
+        url = _assemble_url(_id, endpoint, *args, **kwargs)
     resp = requests.get(url)
 
     if resp.status_code == 503:
@@ -57,7 +63,7 @@ def _call_api(_id, endpoint, *args, **kwargs):
     res = resp.json()
 
     if 'error' in res:
-        if res['error']['code'] == 17:
+        if res['error']['code'] in [17, 190]:
             print("""User request limit reached."""
                   """Please refresh your token and start againg.""")
         raise Exception(
