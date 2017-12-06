@@ -16,7 +16,7 @@ def crawl_group(settings):
         print('next page')
         _crawl_posts(feed, settings)
 
-        feed = _get_feed(settings, feed)
+        feed = _paginate_feed(settings, feed)
         if not feed:
             has_next_page_url = False
 
@@ -57,23 +57,23 @@ def _crawl_comments(settings, post_id):
             has_next_page_url = False
 
 
-def _get_feed(settings, current_feed=None):
-    if current_feed:
-        next_page_url = get_next_page_url(current_feed,
-                                          remove_access_token=True)
-        if next_page_url:
-            save_next_page_url(settings,
-                               settings.facebook_group_id, next_page_url)
-        else:
-            return None
-
+def _get_feed(settings):
     if not next_page_exists(settings, settings.facebook_group_id):
         feed = get_feed(settings)
-        next_page_url = get_next_page_url(feed, remove_access_token=True)
-        if next_page_url:
-            save_next_page_url(settings,
-                               settings.facebook_group_id, next_page_url)
+        _save_next_page_url(settings, feed)
         return feed
 
-    next_page_url = get_next_page(settings, settings.facebook_group_id)
-    return get_feed(settings, url=next_page_url)
+    return get_feed(settings,
+                    url=get_next_page(settings, settings.facebook_group_id))
+
+
+def _paginate_feed(settings, feed):
+    return _get_feed(settings) if _save_next_page_url(settings, feed) else None
+
+
+def _save_next_page_url(settings, feed):
+    next_page_url = get_next_page_url(feed, remove_access_token=True)
+    if next_page_url:
+        save_next_page_url(settings, settings.facebook_group_id, next_page_url)
+        return True
+    return False
