@@ -63,9 +63,11 @@ def _call_api(_id, endpoint, *args, **kwargs):
     res = resp.json()
 
     if 'error' in res:
-        if res['error']['code'] in [17, 190]:
-            print("""User request limit reached."""
-                  """Please refresh your token and start againg.""")
+        if res['error']['code'] == 17:
+            print("User request limit reached.")
+        elif res['error']['code'] == 190:
+            print("""Access token has expired"""
+                  """Please refresh your token and start again.""")
         raise Exception(
             'Facebook API error: {error}'.format(
                 error=res['error']['message']))
